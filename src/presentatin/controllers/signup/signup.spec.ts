@@ -1,6 +1,7 @@
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
 import { SignUpController } from './signup'
 import { AccountModel, AddAccount, AddAccountModel, EmailValidator } from './signup-protocols'
+import { faker } from '@faker-js/faker'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -10,15 +11,18 @@ const makeEmailValidator = (): EmailValidator => {
   }
   return new EmailValidatorStub()
 }
-
+const idAccount = faker.number.int()
+const nameAccount = faker.internet.userName()
+const emailAccount = faker.internet.email()
+const passwordAccount = faker.internet.password()
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add (account: AddAccountModel): Promise<AccountModel> {
       const fakeAccount = {
-        id: 'valid_id',
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password'
+        id: idAccount,
+        name: nameAccount,
+        email: emailAccount,
+        password: passwordAccount
       }
       return await new Promise(resolve => { resolve(fakeAccount) })
     }
@@ -199,19 +203,19 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
-        passwordConfirmation: 'valid_password'
+        name: nameAccount,
+        email: emailAccount,
+        password: passwordAccount,
+        passwordConfirmation: passwordAccount
       }
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual({
-      id: 'valid_id',
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'valid_password'
+      id: idAccount,
+      name: nameAccount,
+      email: emailAccount,
+      password: passwordAccount
     })
   })
 })
