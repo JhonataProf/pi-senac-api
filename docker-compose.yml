@@ -1,0 +1,32 @@
+version: "3"
+services:
+  mysql:
+    container_name: db_mysql_5.7
+    image: 'mysql:5.7'
+    expose:
+      - 3306
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=RootPassword
+      - MYSQL_DATABASE=horus
+      - MYSQL_USER=MainUser
+      - MYSQL_PASSWORD=MainPassword
+    volumes:
+      - db-data:/var/lib/mysql
+  api:
+    container_name: api-container
+    image: node:12
+    working_dir: /usr/src/clean-node-api
+    restart: always
+    command: bash -c "npm install --only=prod && npm run debug"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/clean-node-api
+    volumes:
+      - ./dist/:/usr/src/clean-node-api/dist/
+      - ./package.json:/usr/src/clean-node-api/package.json
+    ports:
+      - "5050:5050"
+      - "9222:9222"
+    links:
+      - mongo

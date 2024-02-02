@@ -1,5 +1,4 @@
 export default {
-  mongoUrl: process.env.MONGO_URL || 'mongodb://localhost:27017/clean-node-api',
-  port: process.env.PORT || 5050,
-  jwtSecret: process.env.JWT_SECRET || 'tj67O==5H'
+  mySqlUrl: "mysql://MainUser:MainPassword@mysql:3306/horus?serverVersion=5.7&charset=utf8mb4",
+  port: process.env.PORT ?? 3306
 }
