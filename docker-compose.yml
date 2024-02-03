@@ -6,14 +6,12 @@ services:
     expose:
       - 3306
     ports:
-      - '3306:3306'
+      - '3308:3306'
     environment:
       - MYSQL_ROOT_PASSWORD=RootPassword
       - MYSQL_DATABASE=horus
       - MYSQL_USER=MainUser
       - MYSQL_PASSWORD=MainPassword
-    volumes:
-      - db-data:/var/lib/mysql
   api:
     container_name: api-container
     image: node:12
@@ -21,7 +19,7 @@ services:
     restart: always
     command: bash -c "npm install --only=prod && npm run debug"
     environment:
-      - MONGO_URL=mongodb://mongo:27017/clean-node-api
+      - MYSQL_URL=mysql://MainUser:MainPassword@mysql:3308/horus?serverVersion=5.7&charset=utf8mb4
     volumes:
       - ./dist/:/usr/src/clean-node-api/dist/
       - ./package.json:/usr/src/clean-node-api/package.json
@@ -29,4 +27,4 @@ services:
       - "5050:5050"
       - "9222:9222"
     links:
-      - mongo
+      - mysql
