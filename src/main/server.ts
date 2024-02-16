@@ -1,13 +1,9 @@
-import { MongoHelper } from '../ infra/db/mongodb/helpers/mongo-helper'
+import { AppDataSource } from '../infra/db/mysql/data-source'
 import env from './config/env'
 
-MongoHelper.connect(env.mySqlUrl)
-  .then(async (result) => {
-    const app = (await import('./config/app')).default
-    app.listen(env.port, () =>
-      console.log(`Server running at http://localhost:${env.port}`)
-    )
-  })
-  .catch((err) => {
-    console.error(err)
-  })
+AppDataSource.initialize().then(async () => {
+  const app = (await import('./config/app')).default
+  app.listen(env.PORT_SERVER, () =>
+    console.log(`Server running at http://localhost:${env.PORT_SERVER}`)
+  )
+})

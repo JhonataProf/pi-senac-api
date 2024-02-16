@@ -1,30 +1,45 @@
-version: "3"
+version: '3'
 services:
-  mysql:
-    container_name: db_mysql_5.7
-    image: 'mysql:5.7'
-    expose:
-      - 3306
+  db:
+    image: mysql:8
+    container_name: db
     ports:
-      - '3308:3306'
+      - '3312:3306'
     environment:
-      - MYSQL_ROOT_PASSWORD=RootPassword
-      - MYSQL_DATABASE=horus
-      - MYSQL_USER=MainUser
-      - MYSQL_PASSWORD=MainPassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: sistema_podologia
+      MYSQL_USER: pi-senac-user
+      MYSQL_PASSWORD: 'pi-senac'
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - pi-senac-network
   api:
     container_name: api-container
-    image: node:12
-    working_dir: /usr/src/clean-node-api
-    restart: always
-    command: bash -c "npm install --only=prod && npm run debug"
+    image: node:18
+    working_dir: /usr/src/pi-senac
+    command: bash -c "yarn && yarn start:dev"
     environment:
-      - MYSQL_URL=mysql://MainUser:MainPassword@mysql:3308/horus?serverVersion=5.7&charset=utf8mb4
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - DB_NAME=sistema_podologia
+      - DB_USER=root
+      - DB_PASSWORD='rootpassword'
+      - DB_PORT='3306'
     volumes:
-      - ./dist/:/usr/src/clean-node-api/dist/
-      - ./package.json:/usr/src/clean-node-api/package.json
+      - .:/usr/src/pi-senac
     ports:
-      - "5050:5050"
-      - "9222:9222"
+      - '5050:3000'
+      - '9222:9222'
     links:
-      - mysql
+      - db
+    depends_on:
+      - db
+    networks:
+      - pi-senac-network
+networks:
+  pi-senac-network:
+    driver: bridge
+volumes:
+  dbdata:
+    driver: local

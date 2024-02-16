@@ -13,4 +13,10 @@
     "typescript.format.insertSpaceAfterConstructor": true,
     "typescript.format.insertSpaceBeforeFunctionParenthesis": true,
     "editor.tabSize": 2,
+    "cSpell.words": [
+        "Paciente",
+        "podologia",
+        "rootpassword",
+        "typeorm"
+    ],
 }
