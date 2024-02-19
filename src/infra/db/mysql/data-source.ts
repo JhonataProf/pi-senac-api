@@ -1,22 +1,14 @@
+import { createConnection } from 'mysql2'
 import 'reflect-metadata'
-import { DataSource } from 'typeorm'
-import { PacienteSchema } from './schema/paciente'
 
 const SnakeNamingStrategy =
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   require('typeorm-naming-strategies').SnakeNamingStrategy
 
-export const AppDataSource = new DataSource({
-  type: 'mysql',
+export const AppDataSource = createConnection({
   host: 'localhost',
   port: 3306,
-  username: 'root',
+  user: 'root',
   password: 'admin',
-  database: 'sistema_podologia',
-  synchronize: true,
-  logging: true,
-  entities: [PacienteSchema],
-  migrations: [],
-  subscribers: [],
-  namingStrategy: new SnakeNamingStrategy()
+  database: 'sistema_podologia'
 })
